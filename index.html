@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>ONEDEV — Final Full Version</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0b0c10;color:#eafcff;font-family:Inter,system-ui,-apple-system;display:flex;flex-direction:column;align-items:center;padding:20px;min-height:100vh;}
+header{text-align:center;margin-top:20px}
+.logo{width:100px;height:100px;border-radius:50%;border:2px solid #b56cff;object-fit:cover}
+h1{margin-top:10px;color:#fff;font-size:18px;text-align:center;line-height:1.4}
+
+/* menu */
+.menu-area{position:fixed;left:12px;top:12px;z-index:60}
+.menu-btn{font-size:28px;cursor:pointer;color:#b56cff;font-weight:900}
+.sideMenu{position:fixed;left:0;top:0;height:100vh;width:220px;background:rgba(8,8,8,0.98);padding:18px;transform:translateX(-240px);transition:transform .26s cubic-bezier(.2,.9,.28,1);z-index:70;border-right:1px solid rgba(181,108,255,0.25);display:flex;flex-direction:column;gap:10px;}
+.sideMenu.open{transform:translateX(0)}
+.sideMenu h2{color:#b56cff;text-align:center;margin-bottom:6px}
+.sideMenu a{display:flex;gap:8px;align-items:center;color:#e6d8ff;text-decoration:none;font-weight:700;padding:6px 4px;border-radius:8px}
+.sideMenu a:hover{background:rgba(181,108,255,0.12)}
+
+/* tombol utama */
+.card-box{margin-top:20px;width:100%;max-width:420px;display:flex;flex-direction:column;gap:10px;border:1px solid rgba(181,108,255,0.3);border-radius:16px;padding:16px;background:rgba(255,255,255,0.02);box-shadow:0 4px 16px rgba(0,0,0,0.6);}
+.btn{background:linear-gradient(180deg,rgba(181,108,255,0.1),rgba(181,108,255,0.03));border:1px solid rgba(181,108,255,0.4);color:#d5b5ff;border-radius:10px;padding:12px;font-weight:800;cursor:pointer;text-align:center;font-size:15px;letter-spacing:0.3px;}
+.btn:hover{background:rgba(181,108,255,0.1)}
+.btn.jasa{background:linear-gradient(180deg,#ff00aa,#aa00ff);color:#fff;border:2px solid #ff00ff;font-weight:900}
+
+/* galeri */
+.gallery{position:relative;width:100%;max-width:320px;height:540px;margin:35px auto 10px;overflow:hidden;border-radius:22px;border:1px solid rgba(181,108,255,0.3);box-shadow:0 6px 16px rgba(0,0,0,0.7);background:#000;}
+.slider{display:flex;height:100%;transition:transform 0.5s ease-in-out;}
+.slider img{flex:0 0 100%;width:100%;height:100%;object-fit:contain;background:#000;}
+.gallery .nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,0.4);border:none;color:#c999ff;font-size:22px;padding:6px 10px;border-radius:50%;cursor:pointer;z-index:80;}
+.gallery .prev{left:10px}.gallery .next{right:10px}.gallery .nav:hover{background:rgba(0,0,0,0.6)}
+footer{margin-top:auto;padding:20px 0;color:rgba(181,108,255,0.7);font-size:12px}
+
+/* popup */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.72);display:none;align-items:center;justify-content:center;z-index:96;padding:12px;backdrop-filter:blur(5px);}
+.overlay.show{display:flex;animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0;transform:scale(0.97)}to{opacity:1;transform:scale(1)}}
+.modal{width:100%;max-width:520px;border-radius:12px;padding:16px;background:#0f1113;border:1px solid rgba(181,108,255,0.3);box-shadow:0 20px 60px rgba(0,0,0,0.7)}
+.modal h2{color:#b56cff;text-align:center;margin-bottom:8px;font-size:18px}
+.modal p{color:#e6d8ff;font-size:14px;line-height:1.5;margin-bottom:12px}
+.copy-row{display:flex;justify-content:space-between;align-items:center;padding:10px;background:#0b0b0b;border-radius:10px;border:1px solid rgba(181,108,255,0.25);margin-bottom:8px}
+.small-btn{background:transparent;border:0;color:#b56cff;font-weight:800;cursor:pointer;padding:6px}
+.actions{display:flex;gap:10px;margin-top:8px}
+.actions .primary{flex:1;padding:12px;border-radius:12px;background:#b56cff;color:#001;font-weight:900;border:none;cursor:pointer}
+.actions .ghost{flex:1;padding:12px;border-radius:12px;background:#121212;border:1px solid rgba(255,255,255,0.05);color:#fff;cursor:pointer}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:28px;background:rgba(0,0,0,0.6);color:#fff;padding:10px 14px;border-radius:10px;border:1px solid rgba(181,108,255,0.25);z-index:120;display:none;font-weight:700;}
+.toast.show{display:block;animation:fadeIn .2s ease}
+</style>
+</head>
+<body>
+
+<!-- Popup Awal -->
+<div id="popupJoin" class="overlay show">
+  <div class="modal" style="max-width:420px;text-align:center;">
+    <h2>SELAMAT DATANG DI ONEDEV</h2>
+    <p style="color:#e6d8ff;margin-bottom:14px;">
+      Sebelum menggunakan web gratis ini, silakan dukung kami dengan mengikuti saluran resmi ONEDEV.
+    </p>
+    <div class="actions" style="flex-direction:column;gap:8px;">
+      <button id="btnFollow" class="primary" style="width:100%;">Ikuti Saluran WhatsApp</button>
+      <button id="btnEnterSite" class="ghost" style="width:100%;">Lanjutkan ke Situs</button>
+    </div>
+  </div>
+</div>
+
+<!-- Menu Titik Tiga -->
+<div class="menu-area"><div id="menuBtn" class="menu-btn">☰</div></div>
+<nav id="sideMenu" class="sideMenu" aria-hidden="true">
+  <h2>CONTACT ADMIN</h2>
+  <a href="https://whatsapp.com/channel/0029Vb6o7sgGU3BKw965Ti0o/136" target="_blank" rel="noreferrer">WhatsApp</a>
+  <a href="https://t.me/onetoxice" target="_blank" rel="noreferrer">Telegram</a>
+  <a href="https://www.tiktok.com/@onedev02" target="_blank" rel="noreferrer">TikTok</a>
+</nav>
+
+<header>
+  <img src="https://i.imgur.com/sgIjNk8.jpeg" class="logo" alt="Logo">
+  <h1>BAHAN<br>UNBAND ONEDEV</h1>
+</header>
+
+<!-- Tombol Utama + Jasa Unband -->
+<section class="card-box">
+  <button id="btnVideo" class="btn">Video Tutorial</button>
+  <button id="btnTujuan" class="btn">Gmail WhatsApp</button>
+  <button id="btnSubjek" class="btn">Subjek Tinjauan</button>
+  <button id="btnText" class="btn">Text Unband</button>
+  <button id="btnJasa" class="btn jasa">JASA UNBAND PERMANEN</button>
+</section>
+
+<!-- Galeri (6 foto + bisa geser) -->
+<div class="gallery">
+  <button class="nav prev">❮</button>
+  <div class="slider" id="slider">
+    <img src="https://i.imgur.com/fLQxRhC.jpeg" alt="1">
+    <img src="https://i.imgur.com/EV5UgQf.jpeg" alt="2">
+    <img src="https://i.imgur.com/tFTM4rc.jpeg" alt="3">
+    <img src="https://i.imgur.com/JrAdT94.jpeg" alt="4">
+    <img src="https://i.imgur.com/bWf8fe2.jpeg" alt="5">
+    <img src="https://i.imgur.com/qDeX1KY.jpeg" alt="6">
+  </div>
+  <button class="nav next">❯</button>
+</div>
+
+<div id="toast" class="toast"></div>
+<footer>© ONEDEV — 2025</footer>
+
+<!-- SEMUA POPUP LENGKAP (Video, Gmail, Subjek, Text, Success, Jasa) -->
+<div id="popupVideo" class="overlay">
+  <div class="modal">
+    <h2>VIDEO TUTORIAL</h2>
+    <p>Tonton panduan cara banding WhatsApp</p>
+    <div class="actions">
+      <button class="primary" id="openTiktok">Buka</button>
+      <button class="ghost" data-close>Tutup</button>
+    </div>
+  </div>
+</div>
+
+<div id="popupTujuan" class="overlay">
+  <div class="modal">
+    <h2>GMAIL TUJUAN</h2>
+    <div class="copy-row"><span id="email1">support@whatsapp.com</span><button class="small-btn" data-copy="email1">Salin</button></div>
+    <div class="copy-row"><span id="email2">support@support.whatsapp.com</span><button class="small-btn" data-copy="email2">Salin</button></div>
+    <div class="copy-row"><span id="email3">smb@support.whatsapp.com</span><button class="small-btn" data-copy="email3">Salin</button></div>
+    <div class="actions"><button class="primary" data-close>Tutup</button></div>
+  </div>
+</div>
+
+<div id="popupSubjek" class="overlay">
+  <div class="modal">
+    <h2>SUBJEK TINJAUAN</h2>
+    <p id="subjekText">Request for Detailed Review &amp; Restoration of Permanently Banned WhatsApp Account (+62xxxxxxxxxxx)</p>
+    <div class="actions">
+      <button class="primary" data-copy="subjekText">Salin Subjek</button>
+      <button class="ghost" data-close>Tutup</button>
+    </div>
+  </div>
+</div>
+
+<div id="popupText" class="overlay">
+  <div class="modal">
+    <h2>TEXT UNBAND</h2>
+    <p>Pilih jenis Opsi Akun anda:</p>
+    <select id="textOption" style="width:100%;padding:10px;border-radius:10px;background:#0b0b0b;color:#e6d8ff;margin:10px 0;">
+      <option value="">-- Pilih Opsi Band --</option>
+      <option value="spam">Spam / Tinjau</option>
+      <option value="baru">Permanen belum 1 hari</option>
+      <option value="sebulan">Permanen belum 1 bulan</option>
+      <option value="beberapa">Permanen udh beberapa bulan</option>
+    </select>
+    <div class="actions">
+      <button class="primary" id="copyUnbandBtn">Salin Text</button>
+      <button class="ghost" data-close>Tutup</button>
+    </div>
+  </div>
+</div>
+
+<div id="popupSuccess" class="overlay">
+  <div class="modal">
+    <h2>Copied successfully</h2>
+    <p class="success-inset"><strong>Sukses disalin!✅</strong><br><br>Silakan tempel teks ke <strong>Gmail</strong> .<br><br>Setelah pengajuan banding dikirim, pihak WhatsApp biasanya membutuhkan waktu <strong>1–7 hari kerja</strong> untuk meninjau dan memproses permintaan anda<br><br>Apabila setelah beberapa kali pengajuan akun tetap tidak terbuka, berarti permohonan banding Anda ditolak oleh sistem WhatsApp — kemungkinan karena nomor Anda terdeteksi melakukan pelanggaran verifikasi, seperti aktivitas spam, promosi massal, atau penggunaan yang tidak sesuai kebijakan.</p>
+    <div class="actions"><button class="primary" data-close>Tutup</button></div>
+  </div>
+</div>
+
+<div id="popupJasa" class="overlay">
+  <div class="modal" style="text-align:center;">
+    <h2 style="color:#ff00ff;font-size:22px;">JASA UNBAND PERMANEN</h2>
+    <p style="font-size:20px;font-weight:900;color:#00ffff;margin:12px 0;">Harga: Rp40.000</p>
+    <p style="color:#e6d8ff;line-height:1.6;">
+      #Khusus untuk nomor yang sudah ke baned permanen 1 bulan atau lebih <br>
+      #Tidak menerima nomor yang baru ke baned/belom sampai 1 bulan lebih !!<br>
+      Proses cuman 2 menit /kedip , Alltestimoni lengkap cek ke saluran
+    </p>
+    <div class="actions" style="margin-top:20px;">
+      <button class="primary" onclick="window.open('https://wa.me/6289513794264?text=Bang,%20mau%20order%20jasa%20unband%20permanen%20Rp150rb','_blank')">WHATSAPP</button>
+      <button class="ghost" onclick="window.open('https://t.me/onetoxice','_blank')">TELEGRAM</button>
+    </div>
+    <button class="ghost" data-close style="margin-top:15px;width:100%">Tutup</button>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded',()=>{
+
+// Popup Awal
+document.getElementById('btnFollow').onclick=()=>window.open("https://whatsapp.com/channel/0029Vb6o7sgGU3BKw965Ti0o/136","_blank");
+document.getElementById('btnEnterSite').onclick=()=>document.getElementById('popupJoin').classList.remove('show');
+
+// Menu Titik Tiga
+const menuBtn=document.getElementById('menuBtn');
+const sideMenu=document.getElementById('sideMenu');
+menuBtn.onclick=e=>{e.stopPropagation();sideMenu.classList.toggle('open');}
+document.addEventListener('click',e=>{if(!sideMenu.contains(e.target)&&!menuBtn.contains(e.target)) sideMenu.classList.remove('open');});
+
+// Toast
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1500);}
+
+// Copy Text
+function safeCopy(text){const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.left='-9999px';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);return true;}
+
+// Open & Close Popup
+function openPopup(id){document.getElementById(id).classList.add('show');}
+function closePopup(el){el.closest('.overlay').classList.remove('show');}
+document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>closePopup(b));
+
+// Tombol Utama
+document.getElementById('btnVideo').onclick=()=>openPopup('popupVideo');
+document.getElementById('btnTujuan').onclick=()=>openPopup('popupTujuan');
+document.getElementById('btnSubjek').onclick=()=>openPopup('popupSubjek');
+document.getElementById('btnText').onclick=()=>openPopup('popupText');
+document.getElementById('btnJasa').onclick=()=>openPopup('popupJasa');
+document.getElementById('openTiktok').onclick=()=>window.open('https://vt.tiktok.com/ZSfhjHWke/');
+
+// Copy Email & Subjek
+document.querySelectorAll('[data-copy]').forEach(btn=>{
+  btn.onclick=()=>{const text=document.getElementById(btn.dataset.copy).innerText.trim();safeCopy(text);showToast('Disalin');}
+});
+
+// Text Unband (4 opsi)
+document.getElementById('copyUnbandBtn').onclick=()=>{
+  const opt=document.getElementById('textOption').value;
+  if(!opt){alert('Pilih jenis banned dulu!');return;}
+  const teks={
+    spam:`Selamat pagi, Tim WhatsApp. Nomor saya diblokir secara tidak sengaja. Mohon bantuan untuk mengaktifkannya kembali. Terima kasih.`,
+    baru:`Halo Tim Dukungan WhatsApp,Saya sangat terkejut dan kecewa karena nomor saya, [+62XXXXXXX], baru saja diblokir secara permanen hari ini. Saya yakin ada kesalahpahaman atau kesalahan yang tidak disengaja dari pihak saya. Saya sangat mengandalkan nomor ini untuk komunikasi pribadi dan pekerjaan sehari-hari. Saya mohon dengan sangat agar dapat meninjau ulang keputusan ini dan memberikan saya kesempatan kedua. Saya berjanji akan lebih berhati-hati dan mematuhi semua kebijakan WhatsApp. Terima kasih atas perhatian dan bantuannya.`,
+    sebulan:`Halo Tim Dukungan WhatsApp,Saya menulis kembali mengenai nomor saya, [+62XXXXXX], yang sudah diblokir permanen selama lebih dari beberapa Minggu. Pemblokiran ini telah sangat mengganggu aktivitas komunikasi saya, baik untuk urusan pribadi maupun pekerjaan. Saya sudah mempelajari kembali kebijakan WhatsApp dan menyadari di mana saya mungkin telah melakukan kesalahan. Saya mohon agar dapat diberikan kesempatan untuk memperbaikinya. Mohon tinjau kembali kasus saya dengan serius. Terima kasih.`,
+    beberapa:`Halo Tim Dukungan WhatsApp,Saya adalah pengguna setia WhatsApp yang nomornya, [+62xXXXXXXXX], telah diblokir secara permanen sudah lama. Saya sudah mengajukan banding beberapa kali, namun hingga saat ini belum ada tanggapan atau perubahan. Saya memahami jika keputusan akhir adalah tetap, namun saya sangat berharap bisa mendapatkan penjelasan mengapa banding saya tidak pernah berhasil. Banyak kenangan dan kontak penting yang tersimpan di sana. Jika memang tidak bisa dibuka kembali, saya mohon agar setidaknya ada kejelasan. Terima kasih atas waktu dan perhatian Anda.`
+  };
+  safeCopy(teks[opt]); showToast('Pesan disalin');
+  document.getElementById('popupText').classList.remove('show');
+  setTimeout(()=>openPopup('popupSuccess'),300);
+};
+
+// Galeri Slider (6 foto + touch swipe)
+const slider=document.getElementById('slider');
+let current=0, startX=null;
+function updateSlide(){slider.style.transform=`translateX(-${current*100}%)`;}
+document.querySelector('.next').onclick=()=>{current=(current+1)%6;updateSlide();}
+document.querySelector('.prev').onclick=()=>{current=(current-1+6)%6;updateSlide();}
+slider.addEventListener('touchstart',e=>{startX=e.touches[0].clientX;},{passive:true});
+slider.addEventListener('touchend',e=>{
+  if(!startX) return;
+  const diff=startX-e.changedTouches[0].clientX;
+  if(Math.abs(diff)>40){diff>0 ? current=(current+1)%6 : current=(current-1+6)%6; updateSlide();}
+  startX=null;
+});
+updateSlide();
+
+});
+</script>
+</body>
+</html>
